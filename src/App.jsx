@@ -4,6 +4,8 @@ import { findDOMNode } from "react-dom";
 const App = () => {
   const [team, setTeam] = useState([]);
   const [money, setMoney] = useState(100);
+  const [totalStrength, setTotalStrength] = useState(0);
+  const [totalAgility, setTotalAgility] = useState(0);
   const [zombieFighters, setZombieFighters] = useState([
     {
       name: "Survivor",
@@ -80,33 +82,24 @@ const App = () => {
     if (money >= newFighter.price) {
       setTeam([...team, newFighter]);
       setMoney(money - newFighter.price);
+      setTotalStrength(totalStrength + newFighter.strength);
+      setTotalAgility(totalAgility + newFighter.agility);
     } else {
       console.log("Not Enough Money");
     }
   };
+  const deleteFighterFromTeam = (index, fighter) => {
+    const updatedTeam = [...team];
+    updatedTeam.splice(index, 1);
+    setTeam(updatedTeam);
+    setMoney(money + fighter.price);
+    setTotalStrength(totalStrength - fighter.strength);
+    setTotalAgility(totalAgility - fighter.agility);
+  };
   return (
     <>
       <h1>All Zombie Fighters</h1>
-      {zombieFighters.map((figher) => (
-        <ul>
-          <li>
-            <li>
-              <img src={figher.img}></img>
-            </li>
-            Name :{figher.name} , Price :{figher.price} , Strength :
-            {figher.strength} , Aligity :{figher.agility}
-            <button onClick={() => addFighterToTeam(figher)}>Add</button>
-          </li>
-        </ul>
-      ))}
-      <h1>Team</h1>
-      <h2>Money: {money}$</h2>
-      {team.length === 0 ? (
-        <h1>Add Fighters Habibi</h1>
-      ) : (
-        <h1>Your Team Is: </h1>
-      )}
-      {team.map((fighter) => (
+      {zombieFighters.map((fighter) => (
         <ul>
           <li>
             <li>
@@ -114,6 +107,30 @@ const App = () => {
             </li>
             Name :{fighter.name} , Price :{fighter.price} , Strength :
             {fighter.strength} , Aligity :{fighter.agility}
+            <button onClick={() => addFighterToTeam(fighter)}>Add</button>
+          </li>
+        </ul>
+      ))}
+      <h1>Team</h1>
+      <h2>Money: {money}$</h2>
+      <h2>Strength: {totalStrength}</h2>
+      <h2>Agility: {totalAgility}</h2>
+      {team.length === 0 ? (
+        <h1>Add Fighters Habibi</h1>
+      ) : (
+        <h1>Your Team Is: </h1>
+      )}
+      {team.map((fighter, index) => (
+        <ul>
+          <li>
+            <li>
+              <img src={fighter.img}></img>
+            </li>
+            Name :{fighter.name} , Price :{fighter.price} , Strength :
+            {fighter.strength} , Aligity :{fighter.agility}
+            <button onClick={() => deleteFighterFromTeam(index, fighter)}>
+              Delete
+            </button>
           </li>
         </ul>
       ))}
